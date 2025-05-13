@@ -11,8 +11,8 @@ import (
 
 	ktyefft "github.com/ktye/fft"
 	dspfft "github.com/mjibson/go-dsp/fft"
+	scientificfft "github.com/scientificgo/fft"
 	gonumfft "gonum.org/v1/gonum/dsp/fourier"
-	scientificfft "scientificgo.org/fft"
 )
 
 // Slow is the simplest and slowest FFT transform, for testing purposes
