@@ -1,4 +1,4 @@
-# gofft [![GoDoc][godoc-badge]][godoc] [![Build Status][travis-ci-badge]][travis-ci] [![Report Card][report-card-badge]][report-card]
+# gofft
 
 A better radix-2 fast Fourier transform in Go.
 
@@ -32,8 +32,8 @@ One downside is that the FFT is not multithreaded (like go-dsp is), so for large
 package main
 
 import (
- "fmt"
- "github.com/argusdusty/gofft"
+    "fmt"
+    "github.com/NovikovRoman/gofft"
 )
 
 func main() {
@@ -75,7 +75,7 @@ Outputs:
 gofft>go test -bench=FFT$ -benchmem -cpu=1 -benchtime=5s
 goos: windows
 goarch: amd64
-pkg: github.com/argusdusty/gofft
+pkg: github.com/NovikovRoman/gofft
 cpu: AMD Ryzen 9 5900X 12-Core Processor
 ```
 
@@ -112,10 +112,3 @@ cpu: AMD Ryzen 9 5900X 12-Core Processor
 | gofft          | Large (131072)     | 2596       | 2387875 ns/op    | 878.25 MB/s   | 0 B/op         | 0 allocs/op  |
 | gofft          | Huge (4194304)     | 27         | 265444115 ns/op  | 252.82 MB/s   | 0 B/op         | 0 allocs/op  |
 | gofft          | Massive (16777216) | 5          | 1069123500 ns/op | 251.08 MB/s   | 0 B/op         | 0 allocs/op  |
-
-[travis-ci-badge]:   https://api.travis-ci.org/argusdusty/gofft.svg?branch=master
-[travis-ci]:         https://api.travis-ci.org/argusdusty/gofft
-[godoc-badge]:       https://godoc.org/github.com/argusdusty/gofft?status.svg
-[godoc]:             https://godoc.org/github.com/argusdusty/gofft
-[report-card-badge]: https://goreportcard.com/badge/github.com/argusdusty/gofft
-[report-card]:       https://goreportcard.com/report/github.com/argusdusty/gofft
