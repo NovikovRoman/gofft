@@ -8,7 +8,7 @@ import (
 
 func TestIsPow2(t *testing.T) {
 	// 1. Test all powers of 2 up to 2^63
-	for i := 0; i < 64; i++ {
+	for i := range 64 {
 		x := 1 << uint64(i)
 		r := IsPow2(x)
 		if r != true {
@@ -18,7 +18,7 @@ func TestIsPow2(t *testing.T) {
 
 	// 2. Test all non-powers of 2 up to 2^15
 	n := 1
-	for x := 0; x < (1 << 16); x++ {
+	for x := range 1 << 16 {
 		if x == n {
 			n <<= 1
 			continue
@@ -36,7 +36,7 @@ func TestNextPow2(t *testing.T) {
 	if r != 1 {
 		t.Errorf("NextPow2(0), got: %d, expected: 1", r)
 	}
-	for i := 0; i < 63; i++ {
+	for i := range 63 {
 		// 1. Test all powers of 2 up to 2^62
 		x := 1 << uint32(i)
 		r := NextPow2(x)
@@ -66,7 +66,7 @@ func checkZeroPadding(t *testing.T, x1, x2 []complex128, N1, N2 int) {
 	if len(x2) != N2 {
 		t.Errorf("ZeroPad new array length, got: %d, expected: %d", len(x2), N2)
 	}
-	for j := 0; j < N1; j++ {
+	for j := range N1 {
 		if x1[j] != x2[j] {
 			t.Errorf("ZeroPad copied section, got: x2[j] = %v, expected: x2[j] = %v", x2[j], x1[j])
 		}
@@ -79,7 +79,7 @@ func checkZeroPadding(t *testing.T, x1, x2 []complex128, N1, N2 int) {
 }
 
 func TestZeroPad(t *testing.T) {
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		// Test random lengths between 0 and 10000, and random paddings between 0 and 1000
 		N1 := rand.Intn(10000)
 		N2 := N1 + rand.Intn(1000)
@@ -95,7 +95,7 @@ func TestZeroPadToNextPow2(t *testing.T) {
 	if len(r) != 1 {
 		t.Errorf("len(ZeroPadToNextPow2(nil)), got: %d, expected: 1", len(r))
 	}
-	for i := 0; i < 17; i++ {
+	for i := range 17 {
 		// 1. Test powers of 2 up to 2^16
 		N1 := 1 << uint32(i)
 		x1 := complexRand(N1)
@@ -117,13 +117,13 @@ func TestZeroPadToNextPow2(t *testing.T) {
 
 func TestFloat64ToComplex128Array(t *testing.T) {
 	// Test random arrays of length 0 to 1000
-	for i := 0; i < 1000; i++ {
+	for i := range 1000 {
 		a := floatRand(i)
 		b := Float64ToComplex128Array(a)
 		if len(a) != len(b) {
 			t.Errorf("Float64ToComplex128Array, got: len(b) = %v, expected: len(b) = %v", len(b), len(a))
 		}
-		for j := 0; j < i; j++ {
+		for j := range i {
 			if a[j] != real(b[j]) {
 				t.Errorf("Float64ToComplex128Array, got: real(b[j]) = %v, expected: real(b[j]) = %v", real(b[j]), a[j])
 			}
@@ -136,13 +136,13 @@ func TestFloat64ToComplex128Array(t *testing.T) {
 
 func TestComplex128ToFloat64Array(t *testing.T) {
 	// Test random arrays of length 0 to 1000
-	for i := 0; i < 1000; i++ {
+	for i := range 1000 {
 		a := complexRand(i)
 		b := Complex128ToFloat64Array(a)
 		if len(a) != len(b) {
 			t.Errorf("Complex128ToFloat64Array, got: len(b) = %v, expected: len(b) = %v", len(b), len(a))
 		}
-		for j := 0; j < i; j++ {
+		for j := range i {
 			if real(a[j]) != b[j] {
 				t.Errorf("Complex128ToFloat64Array, got: b[j] = %v, expected: b[j] = %v", b[j], real(a[j]))
 			}
@@ -152,12 +152,12 @@ func TestComplex128ToFloat64Array(t *testing.T) {
 
 func TestRoundFloat64Array(t *testing.T) {
 	// Test random arrays of length 0 to 1000
-	for i := 0; i < 1000; i++ {
+	for i := range 1000 {
 		a := floatRand(i)
 		b := make([]float64, i)
 		copy(b, a)
 		RoundFloat64Array(b)
-		for j := 0; j < i; j++ {
+		for j := range i {
 			if math.Round(a[j]) != b[j] {
 				t.Errorf("RoundFloat64Array, got: math.Round(a[j]) = %v, expected: math.Round(a[j]) = %v", math.Round(a[j]), b[j])
 			}

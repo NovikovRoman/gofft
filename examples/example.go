@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/argusdusty/gofft"
+	"github.com/NovikovRoman/gofft"
 )
 
 func main() {

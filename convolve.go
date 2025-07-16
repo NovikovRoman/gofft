@@ -142,7 +142,7 @@ func FastMultiConvolve(X []complex128, n int, multithread bool) error {
 		if multithread {
 			var wg sync.WaitGroup
 			NumCPU := runtime.NumCPU()
-			for j := 0; j < NumCPU; j++ {
+			for j := range NumCPU {
 				wg.Add(1)
 				go func(s, e int) {
 					defer wg.Done()
@@ -165,7 +165,7 @@ func FastMultiConvolve(X []complex128, n int, multithread bool) error {
 func convolve(x, y []complex128) {
 	fft(x)
 	fft(y)
-	for i := 0; i < len(x); i++ {
+	for i := range x {
 		x[i] *= y[i]
 		y[i] = 0
 	}

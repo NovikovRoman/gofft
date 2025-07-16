@@ -77,7 +77,7 @@ func TestFastConvolve(t *testing.T) {
 				t.Errorf("FastConvolve failed to zero-pad x: got x[%d]=%v, expected x[%d]=%v, diff=%v", j, x[j], j, 0, e)
 			}
 		}
-		for j := 0; j < N; j++ {
+		for j := range N {
 			if y[j] != 0 {
 				t.Errorf("FastConvolve failed to erase y: got y[%d]=%v, expected y[%d]=%v", j, y[j], j, 0)
 			}
@@ -128,7 +128,7 @@ func TestMultiConvolve(t *testing.T) {
 			if len(r1) != len(r2) {
 				t.Errorf("slowMultiConvolve and MultiConvolve differ in length: len(r1)=%d, len(r2)=%d", len(r1), len(r2))
 			}
-			for k := 0; k < len(r1); k++ {
+			for k := range r1 {
 				if e := cmplx.Abs(r1[k] - r2[k]); e > errorThreshold {
 					t.Errorf("slowMultiConvolve and MultiConvolve differ: r1[%d]=%v, r2[%d]=%v, diff=%v, i=%d, j=%d", k, r1[k], k, r2[k], e, i, j)
 				}
@@ -203,8 +203,11 @@ func BenchmarkConvolve(b *testing.B) {
 		b.Run(bm.name, func(b *testing.B) {
 			b.SetBytes(int64(bm.size * 32))
 			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				Convolve(x, y)
+			for b.Loop() {
+				_, err := Convolve(x, y)
+				if err != nil {
+					b.Error(err)
+				}
 			}
 		})
 	}
@@ -218,8 +221,11 @@ func BenchmarkFastConvolve(b *testing.B) {
 		b.Run(bm.name, func(b *testing.B) {
 			b.SetBytes(int64(bm.size * 32))
 			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				FastConvolve(x, y)
+			for b.Loop() {
+				err := FastConvolve(x, y)
+				if err != nil {
+					b.Error(err)
+				}
 			}
 		})
 	}
@@ -254,8 +260,11 @@ func BenchmarkMultiConvolve(b *testing.B) {
 		b.Run(bm.name, func(b *testing.B) {
 			b.SetBytes(int64(bm.size * bm.number * 16))
 			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				MultiConvolve(x...)
+			for b.Loop() {
+				_, err := MultiConvolve(x...)
+				if err != nil {
+					b.Error(err)
+				}
 			}
 		})
 	}
@@ -271,8 +280,11 @@ func BenchmarkFastMultiConvolve(b *testing.B) {
 		b.Run(bm.name, func(b *testing.B) {
 			b.SetBytes(int64(bm.size * bm.number * 16))
 			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				FastMultiConvolve(x, 2*NextPow2(bm.size), false)
+			for b.Loop() {
+				err := FastMultiConvolve(x, 2*NextPow2(bm.size), false)
+				if err != nil {
+					b.Error(err)
+				}
 			}
 		})
 	}
@@ -288,7 +300,7 @@ func BenchmarkFastMultiConvolveParallel(b *testing.B) {
 		b.Run(bm.name, func(b *testing.B) {
 			b.SetBytes(int64(bm.size * bm.number * 16))
 			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
+			for b.Loop() {
 				err := FastMultiConvolve(x, 2*NextPow2(bm.size), true)
 				if err != nil {
 					b.Error(err)

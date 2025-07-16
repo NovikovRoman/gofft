@@ -9,9 +9,6 @@ import (
 	"sync/atomic"
 	"testing"
 
-	ktyefft "github.com/ktye/fft"
-	dspfft "github.com/mjibson/go-dsp/fft"
-	scientificfft "github.com/scientificgo/fft"
 	gonumfft "gonum.org/v1/gonum/dsp/fourier"
 )
 
@@ -155,43 +152,6 @@ func BenchmarkSlowFFT(b *testing.B) {
 	}
 }
 
-func BenchmarkKtyeFFT(b *testing.B) {
-	for _, bm := range benchmarks {
-		if bm.size > 1048576 {
-			// Max size for ktye's fft
-			continue
-		}
-		f, err := ktyefft.New(bm.size)
-		if err != nil {
-			b.Errorf("fft.New error: %v", err)
-		}
-		x := complexRand(bm.size)
-
-		b.Run(bm.name, func(b *testing.B) {
-			b.SetBytes(int64(bm.size * 16))
-			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				f.Transform(x)
-			}
-		})
-	}
-}
-
-func BenchmarkGoDSPFFT(b *testing.B) {
-	for _, bm := range benchmarks {
-		dspfft.EnsureRadix2Factors(bm.size)
-		x := complexRand(bm.size)
-
-		b.Run(bm.name, func(b *testing.B) {
-			b.SetBytes(int64(bm.size * 16))
-			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				dspfft.FFT(x)
-			}
-		})
-	}
-}
-
 func BenchmarkGonumFFT(b *testing.B) {
 	for _, bm := range benchmarks {
 		fft := gonumfft.NewCmplxFFT(bm.size)
@@ -207,20 +167,6 @@ func BenchmarkGonumFFT(b *testing.B) {
 	}
 }
 
-func BenchmarkScientificFFT(b *testing.B) {
-	for _, bm := range benchmarks {
-		x := complexRand(bm.size)
-
-		b.Run(bm.name, func(b *testing.B) {
-			b.SetBytes(int64(bm.size * 16))
-			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				scientificfft.Fft(x, false)
-			}
-		})
-	}
-}
-
 func BenchmarkFFT(b *testing.B) {
 	for _, bm := range benchmarks {
 		x := complexRand(bm.size)
@@ -228,8 +174,8 @@ func BenchmarkFFT(b *testing.B) {
 		b.Run(bm.name, func(b *testing.B) {
 			b.SetBytes(int64(bm.size * 16))
 			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
-				FFT(x)
+			for b.Loop() {
+				_ = FFT(x)
 			}
 		})
 	}
@@ -248,7 +194,7 @@ func BenchmarkFFTParallel(b *testing.B) {
 				i := int(atomic.AddUint64(&idx, 1) - 1)
 				y := x[i*bm.size : (i+1)*bm.size]
 				for pb.Next() {
-					FFT(y)
+					_ = FFT(y)
 				}
 			})
 		})
@@ -263,7 +209,7 @@ func BenchmarkIFFT(b *testing.B) {
 			b.SetBytes(int64(bm.size * 16))
 			b.ResetTimer()
 			for i := 0; i < b.N; i++ {
-				IFFT(x)
+				_ = IFFT(x)
 			}
 		})
 	}
@@ -282,7 +228,7 @@ func BenchmarkIFFTParallel(b *testing.B) {
 				i := int(atomic.AddUint64(&idx, 1) - 1)
 				y := x[i*bm.size : (i+1)*bm.size]
 				for pb.Next() {
-					IFFT(y)
+					_ = IFFT(y)
 				}
 			})
 		})
@@ -295,7 +241,7 @@ func BenchmarkPermute(b *testing.B) {
 		b.Run(bm.name, func(b *testing.B) {
 			b.SetBytes(int64(bm.size * 16))
 			b.ResetTimer()
-			for i := 0; i < b.N; i++ {
+			for b.Loop() {
 				permute(x)
 			}
 		})
